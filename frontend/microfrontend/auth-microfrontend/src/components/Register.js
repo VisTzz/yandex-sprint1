@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import * as auth from "../utils/auth.js";
 
-function Register ({ onRegister }){
+function Register() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
-  function handleSubmit(e){
+  function handleSubmit(e) {
     e.preventDefault();
     const userData = {
       email,
@@ -13,6 +14,21 @@ function Register ({ onRegister }){
     }
     onRegister(userData);
   }
+
+  function onRegister({ email, password }) {
+    auth
+      .register(email, password)
+      .then((res) => {
+        setTooltipStatus("success");
+        setIsInfoToolTipOpen(true);
+        history.push("/signin");
+      })
+      .catch((err) => {
+        setTooltipStatus("fail");
+        setIsInfoToolTipOpen(true);
+      });
+  }
+
   return (
     <div className="auth-form">
       <form className="auth-form__form" onSubmit={handleSubmit}>
@@ -21,12 +37,12 @@ function Register ({ onRegister }){
           <label className="auth-form__input">
             <input type="text" name="email" id="email"
               className="auth-form__textfield" placeholder="Email"
-              onChange={e => setEmail(e.target.value)} required  />
+              onChange={e => setEmail(e.target.value)} required />
           </label>
           <label className="auth-form__input">
             <input type="password" name="password" id="password"
               className="auth-form__textfield" placeholder="Пароль"
-              onChange={e => setPassword(e.target.value)} required  />
+              onChange={e => setPassword(e.target.value)} required />
           </label>
         </div>
         <div className="auth-form__wrapper">

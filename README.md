@@ -10,3 +10,4 @@
 
 Задание 2
 https://drive.google.com/file/d/1--tJ6ng3T7s5vlADjxpXtYL6zbK9aNzy/view?usp=sharing
+Моё решение находится на "Страница - 2"

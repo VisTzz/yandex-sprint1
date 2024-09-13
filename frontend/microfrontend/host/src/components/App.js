@@ -1,20 +1,20 @@
-import React from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import { Route, useHistory, Switch } from "react-router-dom";
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
-import ImagePopup from "./ImagePopup";
-import api from "../utils/api";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import Header from "./Header.js";
+import Main from "./Main.js";
+import Footer from "./Footer.js";
+import PopupWithForm from "./PopupWithForm.js";
+import ImagePopup from "../../../card-microfrontend/src/components/ImagePopup.js";
+import api from "../../utils/api.js";
+import { CurrentUserContext } from "../../contexts/CurrentUserContext.js";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
-import AddPlacePopup from "./AddPlacePopup";
-import Register from "./Register";
-import Login from "./Login";
-import InfoTooltip from "./InfoTooltip";
-import ProtectedRoute from "./ProtectedRoute";
-import * as auth from "../utils/auth.js";
+import AddPlacePopup from "../../../card-microfrontend/src/components/AddPlacePopup.js";
+const Register = React.lazy(() => import('auth/Register'));
+const Login = React.lazy(() => import('auth/Login'));
+import InfoTooltip from "./InfoTooltip.js";
+import ProtectedRoute from "./ProtectedRoute.js";
+import * as auth from "../../utils/auth.js";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
@@ -140,35 +140,7 @@ function App() {
       })
       .catch((err) => console.log(err));
   }
-
-  function onRegister({ email, password }) {
-    auth
-      .register(email, password)
-      .then((res) => {
-        setTooltipStatus("success");
-        setIsInfoToolTipOpen(true);
-        history.push("/signin");
-      })
-      .catch((err) => {
-        setTooltipStatus("fail");
-        setIsInfoToolTipOpen(true);
-      });
-  }
-
-  function onLogin({ email, password }) {
-    auth
-      .login(email, password)
-      .then((res) => {
-        setIsLoggedIn(true);
-        setEmail(email);
-        history.push("/");
-      })
-      .catch((err) => {
-        setTooltipStatus("fail");
-        setIsInfoToolTipOpen(true);
-      });
-  }
-
+  
   function onSignOut() {
     // при вызове обработчика onSignOut происходит удаление jwt
     localStorage.removeItem("jwt");
@@ -197,10 +169,14 @@ function App() {
             loggedIn={isLoggedIn}
           />
           <Route path="/signup">
-            <Register onRegister={onRegister} />
+            <Suspense fallback="Loading Module">
+              <Register />
+            </Suspense>
           </Route>
           <Route path="/signin">
-            <Login onLogin={onLogin} />
+            <Suspense fallback="Loading Module">
+              <Login />
+            </Suspense>
           </Route>
         </Switch>
         <Footer />
